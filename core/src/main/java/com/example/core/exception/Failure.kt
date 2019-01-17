@@ -1,8 +1,10 @@
 package com.example.core.exception
 
-sealed class Failure {
+import java.io.IOException
+
+sealed class Failure : IOException() {
     object NetworkConnection : Failure()
-    data class ServerError(val message: String) : Failure()
+    object ServerError : Failure()
 
     /** * Extend this class for feature specific failures.*/
     abstract class FeatureFailure : Failure()

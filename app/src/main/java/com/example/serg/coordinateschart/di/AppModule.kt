@@ -6,7 +6,6 @@ import com.example.core.interfaces.Colors
 import com.example.core.interfaces.Logger
 import com.example.core.interfaces.Strings
 import com.example.serg.coordinateschart.implementations.ColorsImpl
-import com.example.serg.coordinateschart.implementations.LoggerImpl
 import com.example.serg.coordinateschart.implementations.RouterImpl
 import com.example.serg.coordinateschart.implementations.StringsImpl
 import dagger.Module
@@ -47,5 +46,5 @@ class AppModule {
 
     @Provides
     @AppScope
-    fun logger(): Logger = LoggerImpl()
+    fun logger(): Logger = com.example.repository.LoggerImpl()
 }

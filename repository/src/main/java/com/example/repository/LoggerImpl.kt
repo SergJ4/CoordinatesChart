@@ -1,4 +1,4 @@
-package com.example.serg.coordinateschart.implementations
+package com.example.repository
 
 import com.example.core.BuildConfig
 import com.example.core.interfaces.Logger
