@@ -33,19 +33,18 @@ class RepoModule {
 
     @Provides
     @RepoScope
-    fun apiDataSource(coordinatesApi: CoordinatesApi, context: Context) =
-        ApiDataSource(coordinatesApi, context)
-
-    @Provides
-    @RepoScope
-    fun weatherRepo(
-        apiDataSource: ApiDataSource,
+    fun coordinatesRepo(
+        retrofit: Retrofit,
+        context: Context,
         logger: Logger
-    ): CoordinatesRepository =
-        CoordinatesRepositoryImpl(
+    ): CoordinatesRepository {
+        val coordinatesApi = retrofit.create(CoordinatesApi::class.java)
+        val apiDataSource = ApiDataSource(coordinatesApi, context)
+        return CoordinatesRepositoryImpl(
             apiDataSource,
             logger
         )
+    }
 
     @Provides
     @RepoScope
