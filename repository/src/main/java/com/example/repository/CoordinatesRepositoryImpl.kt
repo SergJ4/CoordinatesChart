@@ -26,7 +26,7 @@ class CoordinatesRepositoryImpl(
                     fullResponse.body?.result != null && !fullResponse.body.message.isNullOrBlank() ->
                         throw Failure.ServerError(message = fullResponse.body.message.decode())
 
-                    TODO()
+                    else -> TODO()
                 }
             }
 }
