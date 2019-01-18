@@ -33,17 +33,10 @@ class RepoModule {
 
     @Provides
     @RepoScope
-    fun coordinatesRepo(
-        retrofit: Retrofit,
-        context: Context,
-        logger: Logger
-    ): CoordinatesRepository {
+    fun coordinatesRepo(retrofit: Retrofit): CoordinatesRepository {
         val coordinatesApi = retrofit.create(CoordinatesApi::class.java)
-        val apiDataSource = ApiDataSource(coordinatesApi, context)
-        return CoordinatesRepositoryImpl(
-            apiDataSource,
-            logger
-        )
+        val apiDataSource = ApiDataSource(coordinatesApi)
+        return CoordinatesRepositoryImpl(apiDataSource)
     }
 
     @Provides
@@ -55,6 +48,8 @@ class RepoModule {
         logger: Logger
     ): Retrofit {
         val okHttpBuilder = OkHttpClient.Builder()
+
+        okHttpBuilder.installUnsafeSSLCertificateManager()
 
         val connectivityInterceptor = ConnectivityInterceptor(appContext)
 
@@ -79,4 +74,33 @@ class RepoModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+}
+
+// HIGHLY INSECURE!! DON'T DO THIS IN PRODUCTION!!
+private fun OkHttpClient.Builder.installUnsafeSSLCertificateManager() {
+//    val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+//
+//        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+//
+//        @Throws(CertificateException::class)
+//        override fun checkClientTrusted(
+//            chain: Array<java.security.cert.X509Certificate>,
+//            authType: String
+//        ) {
+//        }
+//
+//        @Throws(CertificateException::class)
+//        override fun checkServerTrusted(
+//            chain: Array<java.security.cert.X509Certificate>,
+//            authType: String
+//        ) {
+//        }
+//    })
+//
+//    val sslContext = SSLContext.getInstance("SSL")
+//    sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+//    val sslSocketFactory = sslContext.getSocketFactory()
+//
+//    sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+    hostnameVerifier { hostname, session -> (hostname.startsWith(BASE_URL)) }
 }

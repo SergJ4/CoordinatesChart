@@ -8,7 +8,7 @@ object ResponseToCoordinateMapper {
 
     fun map(response: Response): List<Coordinate> {
         if (response.points == null || response.points.isEmpty()) {
-            throw Failure.ServerError.apply { messageResource = R.string.unknown_error }
+            throw Failure.ServerError("").apply { messageResource = R.string.unknown_error }
         }
 
         return response

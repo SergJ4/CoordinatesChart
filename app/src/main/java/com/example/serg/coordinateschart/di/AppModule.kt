@@ -3,7 +3,6 @@ package com.example.serg.coordinateschart.di
 import android.content.Context
 import com.example.core.di.scopes.AppScope
 import com.example.core.interfaces.Colors
-import com.example.core.interfaces.Logger
 import com.example.core.interfaces.Strings
 import com.example.serg.coordinateschart.implementations.ColorsImpl
 import com.example.serg.coordinateschart.implementations.RouterImpl
@@ -43,8 +42,4 @@ class AppModule {
     @Provides
     @AppScope
     fun strings(appContext: Context): Strings = StringsImpl(appContext)
-
-    @Provides
-    @AppScope
-    fun logger(): Logger = com.example.repository.LoggerImpl()
 }

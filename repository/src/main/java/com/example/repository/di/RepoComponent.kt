@@ -2,9 +2,10 @@ package com.example.repository.di
 
 import android.content.Context
 import com.example.core.di.scopes.RepoScope
+import com.example.core.interfaces.CoordinatesRepository
+import com.example.core.interfaces.Logger
 import dagger.BindsInstance
 import dagger.Component
-import java.util.logging.Logger
 
 @RepoScope
 @Component(
@@ -13,6 +14,8 @@ import java.util.logging.Logger
 interface RepoComponent {
 
     fun provideLogger(): Logger
+
+    fun provideCoordinatesRepo(): CoordinatesRepository
 
     @Component.Builder
     interface Builder {

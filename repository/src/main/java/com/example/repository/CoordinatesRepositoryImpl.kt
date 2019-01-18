@@ -4,15 +4,13 @@ import android.util.Base64
 import com.example.core.entity.Coordinate
 import com.example.core.exception.Failure
 import com.example.core.interfaces.CoordinatesRepository
-import com.example.core.interfaces.Logger
 import com.example.repository.datasource.api.ApiDataSource
 import com.example.repository.datasource.api.ResponseToCoordinateMapper
 import com.example.repository.datasource.api.SUCCESS_CODE
 import io.reactivex.Single
 
 class CoordinatesRepositoryImpl(
-    private val apiDataSource: ApiDataSource,
-    logger: Logger
+    private val apiDataSource: ApiDataSource
 ) : CoordinatesRepository {
 
     override fun getCoordinates(count: Int): Single<List<Coordinate>> =
@@ -26,7 +24,10 @@ class CoordinatesRepositoryImpl(
                     fullResponse.body?.result != null && !fullResponse.body.message.isNullOrBlank() ->
                         throw Failure.ServerError(message = fullResponse.body.message.decode())
 
-                    else -> TODO()
+
+                    else -> throw Failure.ServerError("").apply {
+                        messageResource = R.string.unknown_error
+                    }
                 }
             }
 }
