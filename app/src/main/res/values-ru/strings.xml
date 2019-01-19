@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="connection_error">Проверьте состояние сети на устройстве и повторите попытку</string>
+</resources>

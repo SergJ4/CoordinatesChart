@@ -5,4 +5,6 @@ interface Strings {
     fun unknownErrorString(): String
 
     fun get(stringRes: Int): String
+
+    fun networkConnectionError(): String
 }

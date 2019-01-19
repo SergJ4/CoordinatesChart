@@ -7,6 +7,12 @@ import javax.inject.Inject
 
 class LoggerImpl @Inject constructor() : Logger {
 
+    init {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+    
     override fun logDebug(message: String, tag: String) {
         if (BuildConfig.DEBUG) {
             Timber.tag(tag).d(message)

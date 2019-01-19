@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="info_text">Введите число координат для получения в поле ниже и нажмите на кнопку \"Поехали!\"</string>
+    <string name="countHint">Число координат</string>
+    <string name="goButton">Поехали!</string>
+    <string name="validation_error">Число должно быть больше 0</string>
+</resources>

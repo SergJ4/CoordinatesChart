@@ -1,40 +1,49 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
+
+
+
     defaultConfig {
-        applicationId "com.example.serg.coordinateschart"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
+
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':core')
-    implementation project(path: ':repository')
-    implementation project(path: ':input')
 
     implementation dep.kotlin.lib
+    implementation dep.kotlin.anko_commons
     implementation dep.support.appCompat
-    implementation dep.support.constraintLayout
-    implementation dep.ciceroneNavigator
-    implementation dep.dagger.lib
-    implementation dep.dagger.androidSupport
+    implementation dep.support.design
+    implementation dep.rxjava2.lib
+    implementation dep.rxjava2.android
     implementation dep.arch.viewmodel
 
+    implementation dep.dagger.androidSupport
+    implementation dep.dagger.lib
     kapt dep.dagger.compiler
-    kapt dep.dagger.androidProcessor
+}
+
+androidExtensions {
+    experimental = true
 }

@@ -1,6 +1,7 @@
 package com.example.repository.datasource.api
 
 import io.reactivex.Single
+import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -14,6 +15,7 @@ interface CoordinatesApi {
     @POST(COORDINATES_PATH)
     fun fetchCoordinates(
         @Query(VERSION_QUERY_PARAM) version: String = "1.1",
-        @Query(COUNT_QUERY_PARAM) count: Int
+        @Query(COUNT_QUERY_PARAM) count: Int,
+        @Body body: RequestBody
     ): Single<CoordinatesResponse>
 }
