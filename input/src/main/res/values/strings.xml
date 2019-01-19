@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="info_text">Enter number of coordinates to fetch in the field below and press \"Go!\"</string>
+    <string name="countHint">Enter coordinates count</string>
+    <string name="goButton">Go!</string>
+</resources>

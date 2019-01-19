@@ -32,6 +32,7 @@ ext {
             support            : [
                     appCompat       : "androidx.appcompat:appcompat:$ver.support",
                     constraintLayout: "androidx.constraintlayout:constraintlayout:$ver.constraintLayout",
+                    design          : "com.google.android.material:material:$ver.support",
             ],
 
             arch               : [
