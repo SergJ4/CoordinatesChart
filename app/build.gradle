@@ -26,6 +26,7 @@ dependencies {
     implementation project(path: ':core')
     implementation project(path: ':repository')
     implementation project(path: ':input')
+    implementation project(path: ':chart')
 
     implementation dep.kotlin.lib
     implementation dep.support.appCompat
