@@ -22,13 +22,7 @@ internal class ConnectivityInterceptor(private val context: Context) : Intercept
             throw Failure.NetworkConnection
         }
 
-        val builder = chain.request().newBuilder()
-        val response = chain.proceed(builder.build())
-        //Проверяем код ответа на наличие ошибок
-        if ((response.code() >= 400) and (response.code() < 600)) {
-            throw Failure.NetworkConnection
-        }
-        return response
+        return chain.proceed(chain.request().newBuilder().build())
     }
 }
 

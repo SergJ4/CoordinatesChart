@@ -53,6 +53,8 @@ class InputFragmentViewModel @Inject constructor(
     }
 
     private fun handleCoordinates(coordinates: List<Coordinate>) {
+        val newUiModel = output.value!!.copy(isLoading = false, validationError = false)
+        output(newUiModel)
         //TODO здесь надо переходить на экран с таблицей и графиком и передать туда координаты
     }
 
@@ -85,7 +87,7 @@ class InputFragmentViewModel @Inject constructor(
 
             else -> {
                 logger.logErrorIfDebug(exception)
-                news(strings.networkConnectionError())
+                news(strings.unknownErrorString())
                 val newUiModel = output.value!!.copy(isLoading = false, validationError = false)
                 output(newUiModel)
             }

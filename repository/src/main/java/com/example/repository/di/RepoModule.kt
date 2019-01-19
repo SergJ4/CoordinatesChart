@@ -17,7 +17,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 private const val BASE_URL = "https://demo.bankplus.ru/"
 private const val HTTP_LOG_TAG = "coordinates_http"
@@ -78,29 +83,29 @@ class RepoModule {
 
 // HIGHLY INSECURE!! DON'T DO THIS IN PRODUCTION!!
 private fun OkHttpClient.Builder.installUnsafeSSLCertificateManager() {
-//    val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-//
-//        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-//
-//        @Throws(CertificateException::class)
-//        override fun checkClientTrusted(
-//            chain: Array<java.security.cert.X509Certificate>,
-//            authType: String
-//        ) {
-//        }
-//
-//        @Throws(CertificateException::class)
-//        override fun checkServerTrusted(
-//            chain: Array<java.security.cert.X509Certificate>,
-//            authType: String
-//        ) {
-//        }
-//    })
-//
-//    val sslContext = SSLContext.getInstance("SSL")
-//    sslContext.init(null, trustAllCerts, java.security.SecureRandom())
-//    val sslSocketFactory = sslContext.getSocketFactory()
-//
-//    sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-    hostnameVerifier { hostname, session -> (hostname.startsWith(BASE_URL)) }
+    val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+
+        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+
+        @Throws(CertificateException::class)
+        override fun checkClientTrusted(
+            chain: Array<java.security.cert.X509Certificate>,
+            authType: String
+        ) {
+        }
+
+        @Throws(CertificateException::class)
+        override fun checkServerTrusted(
+            chain: Array<java.security.cert.X509Certificate>,
+            authType: String
+        ) {
+        }
+    })
+
+    val sslContext = SSLContext.getInstance("SSL")
+    sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+    val sslSocketFactory = sslContext.getSocketFactory()
+
+    sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+    hostnameVerifier { _, _ -> true }
 }
