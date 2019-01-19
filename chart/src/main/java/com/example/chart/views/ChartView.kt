@@ -1,4 +1,4 @@
-package com.example.chart
+package com.example.chart.views
 
 import android.content.Context
 import android.graphics.Canvas

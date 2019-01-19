@@ -3,15 +3,26 @@ package com.example.chart
 import android.os.Bundle
 import com.example.core.base.BaseFragment
 import com.example.core.entity.Coordinate
+import kotlinx.android.synthetic.main.chart_layout.*
+import javax.inject.Inject
 
 private const val COORDINATES_LIST = "coordinates"
 
 class ChartFragment : BaseFragment() {
+
+    @Inject
+    internal lateinit var viewModel: ChartFragmentViewModel
+
     override val layout: Int
         get() = R.layout.chart_layout
 
     override fun setupViews() {
-        //TODO
+        table.setData(arguments!![COORDINATES_LIST] as List<Coordinate>)
+        backButton.setOnClickListener { viewModel.accept(UiEvent.BackClicked) }
+    }
+
+    sealed class UiEvent {
+        object BackClicked : UiEvent()
     }
 
     companion object {
