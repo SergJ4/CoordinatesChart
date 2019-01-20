@@ -72,6 +72,8 @@ class ChartView : View {
 
     private fun init(context: Context, attrs: AttributeSet?) {
 
+        setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+
         val lineColor: Int
         var lineWidth: Float
         val pointColor: Int

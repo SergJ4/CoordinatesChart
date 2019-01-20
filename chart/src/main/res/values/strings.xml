@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="save_chart">Save chart</string>
+    <string name="bitmap_save_success">Image successfully saved!</string>
+    <string name="bitmap_save_error">Error while trying to save image</string>
 </resources>

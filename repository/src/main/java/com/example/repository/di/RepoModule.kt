@@ -3,9 +3,11 @@ package com.example.repository.di
 import android.content.Context
 import com.example.core.di.scopes.RepoScope
 import com.example.core.interfaces.CoordinatesRepository
+import com.example.core.interfaces.FileRepository
 import com.example.core.interfaces.Logger
 import com.example.repository.BuildConfig
 import com.example.repository.CoordinatesRepositoryImpl
+import com.example.repository.FileRepositoryImpl
 import com.example.repository.LoggerImpl
 import com.example.repository.datasource.api.ApiDataSource
 import com.example.repository.datasource.api.ConnectivityInterceptor
@@ -79,6 +81,10 @@ class RepoModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+    @Provides
+    @RepoScope
+    fun provideFileRepo(appContext: Context): FileRepository = FileRepositoryImpl(appContext)
 }
 
 // HIGHLY INSECURE!! DON'T DO THIS IN PRODUCTION!!
