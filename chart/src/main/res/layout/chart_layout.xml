@@ -29,6 +29,8 @@
         <com.example.chart.views.ChartView
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="160dp" />
+            android:layout_height="160dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
     </LinearLayout>
 </ScrollView>

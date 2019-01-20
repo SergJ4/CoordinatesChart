@@ -17,7 +17,9 @@ class ChartFragment : BaseFragment() {
         get() = R.layout.chart_layout
 
     override fun setupViews() {
-        table.setData(arguments!![COORDINATES_LIST] as List<Coordinate>)
+        val coordinates = arguments!![COORDINATES_LIST] as List<Coordinate>
+        table.setData(coordinates)
+        chart.setData(coordinates)
         backButton.setOnClickListener { viewModel.accept(UiEvent.BackClicked) }
     }
 
