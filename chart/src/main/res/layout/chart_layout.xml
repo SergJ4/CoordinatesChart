@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@android:color/white">
 
@@ -29,8 +30,13 @@
         <com.example.chart.views.ChartView
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="250dp"
+            app:dotColor="@color/chart_point_color"
+            app:lineColor="@color/chart_line_color"
+            app:dotSize="4dp"
+            app:lineWidth="2dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp" />
     </LinearLayout>
 </ScrollView>

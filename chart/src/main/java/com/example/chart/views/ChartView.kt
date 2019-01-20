@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PointF
+import android.graphics.Rect
 import android.os.Build
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -16,32 +18,45 @@ import kotlin.math.abs
 
 class ChartView : View {
 
-    private val DEFAULT_POINT_RADIUS = 4f
+    private val DEFAULT_POINT_RADIUS = 6f
 
+    private var pointRadius = DEFAULT_POINT_RADIUS
     private val coordinates = ArrayList<Coordinate>()
     private val points = ArrayList<PointF>()
 
     private val linePaint = Paint()
+    private val axisPaint = Paint()
     private val pointPaint = Paint()
+    private val textPaint = TextPaint()
 
     private var xStep = 0f
     private var yStep = 0f
     private var minX = 0f
     private var minY = 0f
 
+    private var xLabelWidth = 0f
+    private var xLabelHeight = 0f
+    private var yLabelWidth = 0f
+    private var yLabelHeight = 0f
+
+    private var xLabelX = 0f
+    private var xLabelY = 0f
+    private var yLabelX = 0f
+    private var yLabelY = 0f
+
     private var xAxisYCoordinate = 0f
     private var yAxisXCoordinate = 0f
 
     constructor(context: Context) : super(context) {
-        init(context)
+        init(context, null)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context)
+        init(context, attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context)
+        init(context, attrs)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -51,31 +66,80 @@ class ChartView : View {
         defStyleAttr,
         defStyleRes
     ) {
-        init(context)
+        init(context, attrs)
     }
 
-    private fun init(context: Context) {
+    private fun init(context: Context, attrs: AttributeSet?) {
 
         val lineColor: Int
-        val lineWidth: Float
+        var lineWidth: Float
         val pointColor: Int
+        val textColor: Int
+        val textSize: Float
 
-        if (isInEditMode) {
-            lineColor = ContextCompat.getColor(context, android.R.color.black)
-            lineWidth = 2f
-            pointColor = ContextCompat.getColor(context, android.R.color.holo_blue_dark)
+        if (attrs != null) {
+            val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.ChartView, 0, 0)
+            lineColor = typedArray.getColor(
+                R.styleable.ChartView_lineColor,
+                ContextCompat.getColor(context, R.color.chart_line_color)
+            )
+            lineWidth = typedArray.getDimension(
+                R.styleable.ChartView_lineWidth,
+                context.dimen(R.dimen.chart_line_width).toFloat()
+            )
+
+            pointColor = typedArray.getColor(
+                R.styleable.ChartView_dotColor,
+                ContextCompat.getColor(context, R.color.chart_point_color)
+            )
+
+            pointRadius = typedArray.getDimension(
+                R.styleable.ChartView_dotSize,
+                DEFAULT_POINT_RADIUS
+            )
+
+            if (lineWidth > pointRadius) {
+                lineWidth = pointRadius
+            }
+
+            typedArray.recycle()
         } else {
             lineColor = ContextCompat.getColor(context, R.color.chart_line_color)
             lineWidth = context.dimen(R.dimen.chart_line_width).toFloat()
             pointColor = ContextCompat.getColor(context, R.color.chart_point_color)
         }
 
+        if (isInEditMode) {
+            textColor = ContextCompat.getColor(context, android.R.color.black)
+            textSize = 16f
+        } else {
+            textSize = context.dimen(R.dimen.chart_text_size).toFloat()
+            textColor = ContextCompat.getColor(context, R.color.chart_text_color)
+        }
+
         linePaint.color = lineColor
         linePaint.strokeWidth = lineWidth
         linePaint.style = Paint.Style.STROKE
 
+        axisPaint.color = ContextCompat.getColor(context, android.R.color.black)
+        axisPaint.strokeWidth = context.dimen(R.dimen.chart_line_width).toFloat()
+        axisPaint.style = Paint.Style.STROKE
+
         pointPaint.color = pointColor
         pointPaint.style = Paint.Style.FILL
+
+        textPaint.color = textColor
+        textPaint.textSize = textSize
+
+        xLabelWidth = textPaint.measureText("x")
+        yLabelWidth = textPaint.measureText("y")
+
+        val rect = Rect()
+        textPaint.getTextBounds("x", 0, "x".length, rect)
+        xLabelHeight = rect.height().toFloat()
+
+        textPaint.getTextBounds("y", 0, "y".length, rect)
+        yLabelHeight = rect.height().toFloat()
     }
 
     fun setData(coordinates: List<Coordinate>) {
@@ -89,7 +153,6 @@ class ChartView : View {
 
             calculateAllParams()
         }
-        invalidate()
     }
 
     private fun calculateAllParams() {
@@ -103,27 +166,51 @@ class ChartView : View {
         xStep = coordinatesXRange / width
         yStep = coordinatesYRange / height
 
-        xAxisYCoordinate = height - (abs(minY) * yStep)
-        yAxisXCoordinate = abs(minX) * xStep
+        xAxisYCoordinate = if (minY < 0) {
+            height.toFloat() - (abs(minY) / yStep)
+        } else {
+            height.toFloat()
+        }
+
+        yAxisXCoordinate = if (minX < 0) {
+            abs(minX) / xStep
+        } else {
+            0f
+        }
 
         coordinates
             .forEach {
                 var cx = ((it.x - minX) / xStep)
-                if (cx < DEFAULT_POINT_RADIUS) {
-                    cx = DEFAULT_POINT_RADIUS
-                } else if (cx > width - DEFAULT_POINT_RADIUS) {
-                    cx = width - DEFAULT_POINT_RADIUS
+                if (cx < pointRadius) {
+                    cx = pointRadius
+                } else if (cx > width - pointRadius) {
+                    cx = width - pointRadius
                 }
 
                 var cy = height - ((it.y - minY) / yStep)
-                if (cy < DEFAULT_POINT_RADIUS) {
-                    cy = DEFAULT_POINT_RADIUS
-                } else if (cy > height - DEFAULT_POINT_RADIUS) {
-                    cy = height - DEFAULT_POINT_RADIUS
+                if (cy < pointRadius) {
+                    cy = pointRadius
+                } else if (cy > height - pointRadius) {
+                    cy = height - pointRadius
                 }
 
                 points.add(PointF(cx, cy))
             }
+
+        xLabelY = if (xAxisYCoordinate < xLabelHeight + 16) {
+            xAxisYCoordinate + 8
+        } else {
+            xAxisYCoordinate - 8
+        }
+        xLabelX = width - xLabelWidth
+
+        yLabelX = if (yAxisXCoordinate > yLabelWidth + 16) {
+            yAxisXCoordinate - yLabelWidth - 8
+        } else {
+            yAxisXCoordinate + 8
+        }
+        yLabelY = yLabelHeight + 4
+        invalidate()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -138,19 +225,35 @@ class ChartView : View {
     }
 
     private fun drawAxis(canvas: Canvas) {
-        canvas.drawLine(0f, xAxisYCoordinate, width.toFloat(), xAxisYCoordinate, linePaint)
-        canvas.drawLine(yAxisXCoordinate, 0f, yAxisXCoordinate, height.toFloat(), linePaint)
+        canvas.drawLine(0f, xAxisYCoordinate, width.toFloat(), xAxisYCoordinate, axisPaint)
+        canvas.drawLine(yAxisXCoordinate, 0f, yAxisXCoordinate, height.toFloat(), axisPaint)
+
+        canvas.drawText("x", xLabelX, xLabelY, textPaint)
+        canvas.drawText("y", yLabelX, yLabelY, textPaint)
     }
 
     private fun drawData(canvas: Canvas) {
-        points
-            .forEach {
+        for (i in 0 until points.size - 1) {
+            val firstPoint = points[i]
+            val secondPoint = points[i + 1]
+
+            if (i == 0) {
                 canvas.drawCircle(
-                    it.x,
-                    it.y,
-                    DEFAULT_POINT_RADIUS,
+                    firstPoint.x,
+                    firstPoint.y,
+                    pointRadius,
                     pointPaint
                 )
             }
+
+            canvas.drawCircle(
+                secondPoint.x,
+                secondPoint.y,
+                pointRadius,
+                pointPaint
+            )
+
+            canvas.drawLine(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y, linePaint)
+        }
     }
 }
