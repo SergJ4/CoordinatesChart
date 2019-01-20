@@ -26,6 +26,8 @@ class InputFragment : BaseFragment() {
             .output
             .subscribe(viewLifecycleOwner) {
                 progress.isRefreshing = it!!.isLoading
+                goButton.isEnabled = !it.isLoading
+
                 if (it.validationError) {
                     countInput.error = getString(R.string.validation_error)
                 } else {

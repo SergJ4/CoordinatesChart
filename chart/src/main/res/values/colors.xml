@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="table_row_text_color">@android:color/white</color>
+    <color name="table_row_even_background">@color/colorPrimaryDark</color>
+    <color name="table_row_odd_background">@color/colorPrimary</color>
+    <color name="chart_line_color">#000</color>
+    <color name="chart_text_color">#000</color>
+    <color name="chart_point_color">#3F51B5</color>
+
+</resources>

@@ -1,3 +1,7 @@
 package com.example.core.entity
 
-data class Coordinate(val x: Float, val y: Float)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Coordinate(val x: Float, val y: Float) : Parcelable

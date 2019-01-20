@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.example.core.R
 import com.example.core.interfaces.Colors
@@ -34,6 +36,18 @@ abstract class BaseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+    }
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        if (view != null) {
+            if (nextAnim == R.anim.slide_in_right || nextAnim == R.anim.slide_out_right) {
+                ViewCompat.setTranslationZ(view!!, 1f)
+            } else {
+                ViewCompat.setTranslationZ(view!!, 0f)
+            }
+        }
+
+        return super.onCreateAnimation(transit, enter, nextAnim)
     }
 
     protected fun showSnackbar(message: String) {

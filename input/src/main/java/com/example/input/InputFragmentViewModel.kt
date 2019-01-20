@@ -9,6 +9,7 @@ import com.example.core.extensions.SingleLiveEvent
 import com.example.core.extensions.async
 import com.example.core.extensions.invoke
 import com.example.core.extensions.startWith
+import com.example.core.interfaces.CHART_SCREEN
 import com.example.core.interfaces.Logger
 import com.example.core.interfaces.Router
 import com.example.core.interfaces.Strings
@@ -55,7 +56,7 @@ class InputFragmentViewModel @Inject constructor(
     private fun handleCoordinates(coordinates: List<Coordinate>) {
         val newUiModel = output.value!!.copy(isLoading = false, validationError = false)
         output(newUiModel)
-        //TODO здесь надо переходить на экран с таблицей и графиком и передать туда координаты
+        router.goTo(CHART_SCREEN, coordinates)
     }
 
     private fun handleFailure(exception: Throwable) {
