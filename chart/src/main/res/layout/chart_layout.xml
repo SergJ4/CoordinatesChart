@@ -38,8 +38,22 @@
             app:dotSize="4dp"
             app:lineWidth="2dp"
             app:isSmooth="true"
+            android:padding="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/saveChartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/save_chart"
+            android:layout_marginBottom="16dp" />
+
+        <ImageView
+            android:id="@+id/test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>

@@ -21,6 +21,10 @@ class ChartFragment : BaseFragment() {
         table.setData(coordinates)
         chart.setData(coordinates)
         backButton.setOnClickListener { viewModel.accept(UiEvent.BackClicked) }
+        saveChartButton.setOnClickListener {
+            val bitmap = chart.getBitmap()
+            test.setImageBitmap(bitmap)
+        }
     }
 
     sealed class UiEvent {

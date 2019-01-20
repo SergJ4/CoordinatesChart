@@ -166,34 +166,34 @@ class ChartView : View {
         minY = coordinates.minBy { it.y }!!.y
         val coordinatesXRange = coordinates.maxBy { it.x }!!.x - minX
         val coordinatesYRange = coordinates.maxBy { it.y }!!.y - minY
-        xStep = coordinatesXRange / width
-        yStep = coordinatesYRange / height
+        xStep = coordinatesXRange / (width - paddingLeft - paddingRight)
+        yStep = coordinatesYRange / (height - paddingBottom - paddingTop)
         xAxisYCoordinate = if (minY < 0) {
-            height.toFloat() - (abs(minY) / yStep)
+            height.toFloat() - paddingBottom - (abs(minY) / yStep)
         } else {
-            height.toFloat()
+            height.toFloat() - paddingBottom
         }
 
         yAxisXCoordinate = if (minX < 0) {
-            abs(minX) / xStep
+            abs(minX) / xStep + paddingLeft.toFloat()
         } else {
-            0f
+            paddingLeft.toFloat()
         }
 
         coordinates
             .forEach {
                 var cx = ((it.x - minX) / xStep)
-                if (cx < pointRadius) {
-                    cx = pointRadius
-                } else if (cx > width - pointRadius) {
-                    cx = width - pointRadius
+                if (cx < pointRadius + paddingLeft) {
+                    cx = pointRadius + paddingLeft
+                } else if (cx > width - pointRadius - paddingRight) {
+                    cx = width - pointRadius - paddingRight
                 }
 
                 var cy = height - ((it.y - minY) / yStep)
-                if (cy < pointRadius) {
-                    cy = pointRadius
-                } else if (cy > height - pointRadius) {
-                    cy = height - pointRadius
+                if (cy < pointRadius + paddingTop) {
+                    cy = pointRadius + paddingTop
+                } else if (cy > height - pointRadius - paddingTop) {
+                    cy = height - pointRadius - paddingTop
                 }
 
                 points.add(PointF(cx, cy))
@@ -204,14 +204,14 @@ class ChartView : View {
         } else {
             xAxisYCoordinate - 8
         }
-        xLabelX = width - xLabelWidth
+        xLabelX = width - xLabelWidth - paddingRight
 
         yLabelX = if (yAxisXCoordinate > yLabelWidth + 16) {
             yAxisXCoordinate - yLabelWidth - 8
         } else {
             yAxisXCoordinate + 8
         }
-        yLabelY = yLabelHeight + 4
+        yLabelY = yLabelHeight + 4 + paddingTop
         invalidate()
     }
 
@@ -232,8 +232,20 @@ class ChartView : View {
     }
 
     private fun drawAxis(canvas: Canvas) {
-        canvas.drawLine(0f, xAxisYCoordinate, width.toFloat(), xAxisYCoordinate, axisPaint)
-        canvas.drawLine(yAxisXCoordinate, 0f, yAxisXCoordinate, height.toFloat(), axisPaint)
+        canvas.drawLine(
+            paddingLeft.toFloat(),
+            xAxisYCoordinate,
+            width.toFloat() - paddingRight,
+            xAxisYCoordinate,
+            axisPaint
+        )
+        canvas.drawLine(
+            yAxisXCoordinate,
+            paddingTop.toFloat(),
+            yAxisXCoordinate,
+            height.toFloat() - paddingTop,
+            axisPaint
+        )
 
         canvas.drawText("x", xLabelX, xLabelY, textPaint)
         canvas.drawText("y", yLabelX, yLabelY, textPaint)
@@ -310,5 +322,12 @@ class ChartView : View {
 
             canvas.drawLine(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y, linePaint)
         }
+    }
+
+    fun getBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        draw(canvas)
+        return bitmap
     }
 }
