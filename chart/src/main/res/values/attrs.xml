@@ -5,5 +5,6 @@
         <attr name="dotColor" format="color" />
         <attr name="lineWidth" format="integer|dimension" />
         <attr name="lineColor" format="color" />
+        <attr name="isSmooth" format="boolean" />
     </declare-styleable>
 </resources>

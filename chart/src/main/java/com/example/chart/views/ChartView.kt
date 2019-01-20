@@ -1,10 +1,7 @@
 package com.example.chart.views
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PointF
-import android.graphics.Rect
+import android.graphics.*
 import android.os.Build
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -19,6 +16,7 @@ import kotlin.math.abs
 class ChartView : View {
 
     private val DEFAULT_POINT_RADIUS = 6f
+    private val SMOOTH_FACTOR = 0.15f
 
     private var pointRadius = DEFAULT_POINT_RADIUS
     private val coordinates = ArrayList<Coordinate>()
@@ -46,6 +44,9 @@ class ChartView : View {
 
     private var xAxisYCoordinate = 0f
     private var yAxisXCoordinate = 0f
+
+    private var isSmooth = false
+    private val path = Path()
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -101,6 +102,8 @@ class ChartView : View {
             if (lineWidth > pointRadius) {
                 lineWidth = pointRadius
             }
+
+            isSmooth = typedArray.getBoolean(R.styleable.ChartView_isSmooth, false)
 
             typedArray.recycle()
         } else {
@@ -165,7 +168,6 @@ class ChartView : View {
         val coordinatesYRange = coordinates.maxBy { it.y }!!.y - minY
         xStep = coordinatesXRange / width
         yStep = coordinatesYRange / height
-
         xAxisYCoordinate = if (minY < 0) {
             height.toFloat() - (abs(minY) / yStep)
         } else {
@@ -221,7 +223,12 @@ class ChartView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         drawAxis(canvas)
-        drawData(canvas)
+
+        if (isSmooth) {
+            drawSmoothData(canvas)
+        } else {
+            drawData(canvas)
+        }
     }
 
     private fun drawAxis(canvas: Canvas) {
@@ -230,6 +237,54 @@ class ChartView : View {
 
         canvas.drawText("x", xLabelX, xLabelY, textPaint)
         canvas.drawText("y", yLabelX, yLabelY, textPaint)
+    }
+
+    private fun drawSmoothData(canvas: Canvas) {
+        for (i in 0 until points.size) {
+            val currentPoint = points[i]
+            val previousPoint = if (i > 0) {
+                points[i - 1]
+            } else {
+                currentPoint
+            }
+            val prePreviousPoint = if (i > 1) {
+                points[i - 2]
+            } else {
+                previousPoint
+            }
+            val nextPoint = if (i < points.size - 1) {
+                points[i + 1]
+            } else {
+                currentPoint
+            }
+
+            if (i == 0) {
+                path.moveTo(currentPoint.x, currentPoint.y)
+            } else {
+                val firstDiffX = currentPoint.x - prePreviousPoint.x
+                val firstDiffY = currentPoint.y - prePreviousPoint.y
+                val secondDiffX = nextPoint.x - previousPoint.x
+                val secondDiffY = nextPoint.y - previousPoint.y
+                val firstControlPointX = previousPoint.x + SMOOTH_FACTOR * firstDiffX
+                val firstControlPointY = previousPoint.y + SMOOTH_FACTOR * firstDiffY
+                val secondControlPointX = currentPoint.x - SMOOTH_FACTOR * secondDiffX
+                val secondControlPointY = currentPoint.y - SMOOTH_FACTOR * secondDiffY
+                path.cubicTo(
+                    firstControlPointX, firstControlPointY, secondControlPointX, secondControlPointY,
+                    currentPoint.x, currentPoint.y
+                )
+            }
+
+            canvas.drawCircle(
+                currentPoint.x,
+                currentPoint.y,
+                pointRadius,
+                pointPaint
+            )
+        }
+
+        canvas.drawPath(path, linePaint)
+        path.reset()
     }
 
     private fun drawData(canvas: Canvas) {
