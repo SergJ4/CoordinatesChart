@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">CoordinatesChart</string>
+    <string name="app_name" translatable="false">CoordinatesChart</string>
+    <string name="connection_error">Check your network connection and try again please</string>
 </resources>

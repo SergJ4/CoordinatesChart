@@ -9,5 +9,5 @@ import io.reactivex.Single
 class ApiDataSource(private val coordinatesApi: CoordinatesApi) {
 
     fun fetchCoordinates(count: Int): Single<CoordinatesResponse> =
-        coordinatesApi.fetchCoordinates(count = count)
+        coordinatesApi.fetchCoordinates(count = count, body = RequestBody(count))
 }
