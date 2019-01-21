@@ -11,3 +11,7 @@ Additional tasks:
 + Connect points using smooth lines (implemented)
 + Correct portrait and landscape orientation handling (implemented without additional layout xml files)
 + Save chart image to file (implemented)
+
+
+Technologies stack:
+Kotlin, MVVM, Google Architecture components ViewModel, LiveData, Dagger 2 (Android Injector), Retrofit
